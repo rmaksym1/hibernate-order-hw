@@ -1,6 +1,9 @@
 package mate.academy.service.impl;
 
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import mate.academy.dao.OrderDao;
 import mate.academy.dao.ShoppingCartDao;
 import mate.academy.lib.Inject;
@@ -9,17 +12,18 @@ import mate.academy.model.Order;
 import mate.academy.model.ShoppingCart;
 import mate.academy.model.User;
 import mate.academy.service.OrderService;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import mate.academy.service.ShoppingCartService;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     @Inject
-    OrderDao orderDao;
+    private OrderDao orderDao;
 
     @Inject
-    ShoppingCartDao shoppingCartDao;
+    private ShoppingCartDao shoppingCartDao;
+
+    @Inject
+    private ShoppingCartService shoppingCartService;
 
     @Override
     @Transactional
@@ -31,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
 
         Order saved = orderDao.add(order);
 
-        shoppingCart.getTickets().clear();
+        shoppingCartService.clearShoppingCart(shoppingCart);
         shoppingCartDao.update(shoppingCart);
 
         return saved;
